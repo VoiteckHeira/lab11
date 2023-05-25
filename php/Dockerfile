@@ -1,0 +1,1 @@
+FROM 8.1.19-fpm-alpine3.17 as php

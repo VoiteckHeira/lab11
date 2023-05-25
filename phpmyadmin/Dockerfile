@@ -1,0 +1,1 @@
+FROM 5.2.1-fpm-alpine as phpmyadmin
