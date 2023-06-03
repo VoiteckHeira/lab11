@@ -1,4 +1,13 @@
-FROM php:8.1.19-fpm-alpine3.17 as php
-COPY . /usr/src/myapp
+FROM php:8.1.19-fpm as php
 WORKDIR /usr/src/myapp
-CMD [ "php", "./your-script.php" ]
+COPY ./index.php ./
+
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    unzip \
+    && docker-php-ext-install pdo_mysql mysqli \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+CMD [ "php", "./index.php" ] 

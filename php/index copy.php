@@ -8,7 +8,7 @@
 <body>
     <h1>Informacje o bazie danych</h1>
     <?php
-    /*// Dane do połączenia z bazą danych
+    // Dane do połączenia z bazą danych
     $hostname = 'localhost';
     $username = 'root';
     $password = 'root';
@@ -36,7 +36,7 @@
 
     // Zamknięcie połączenia
     mysqli_close($conn);
-    */?>
+    ?>
     <hr />
     <br />
     <h3>Imię i nazwisko autora</h3>
