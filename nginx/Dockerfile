@@ -9,8 +9,8 @@ RUN apk add --no-cache \
 LABEL org.opencontainers.image.version="$VERSION"
 LABEL org.opencontainers.image.authors="Wojciech Dziedzic"
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf 
-COPY index.php /usr/share/nginx/html/index.php
+COPY default.conf /etc/nginx/conf.d/default.conf 
+#COPY ../data/index.php /usr/share/nginx/html/index.php
 
 EXPOSE 6002
 

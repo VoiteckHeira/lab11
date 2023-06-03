@@ -1,69 +1,87 @@
 version: '3.7'
 
 services:
-#   nginx:
-#     build:
-#       context: ./nginx
-#     container_name: nginx
-#     restart: unless-stopped
-#     # volumes:
-#     #   - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-#     #   - ./dist:/usr/share/nginx/html
-#     depends_on:
-
-#       - mysql
+  
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf
+      #- ./nginx/data:/usr/share/nginx/html
+      - ./logs/nginx:/var/log/nginx/
+      - ./data/:/var/www/html/
+    depends_on:
+      - php-fpm
+    #links:
+    #  - "php-fpm"
+    ports:
+      - 6002:80
+    networks:
+      - backend
+      - frontend
     
-#     ports:
-#       - 6002:80
-#     networks:
-#       - backend
-#       - frontend
-    
-
-
-
-
   mysql:
-    image: mysql:8.0
+    #image: mysql:8.0
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
     container_name: mysql
     restart: unless-stopped
     command: --default-authentication-plugin=mysql_native_password
-    volumes:
-      - mysql:/var/lib/mysql
-    expose:
-      - 3306
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: mydatabase
+    ports:
+      - 3308:3306
+    volumes:
+      - ./mysql/vol:/var/lib/mysql
+      - ./logs/mysql:/var/log/mysql
+    
+    #expose:
+    #  - 3306
     networks:
      - backend
      
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:fpm
+    #image: phpmyadmin
+    build:
+      context: ./phpmyadmin
+      dockerfile: Dockerfile
     container_name: phpmyadmin
     #restart: unless-stopped
     ports:
       - 8082:80
     environment:
       - PMA_ARBITRARY=1
-      #- PMA_HOST=mysql
+      - PMA_HOST=mysql
       #- MYSQL_ROOT_PASSWORD=root
       #- MYSQL_USER=user
       #- MYSQL_PASSWORD=password
 
     depends_on:
       - mysql
-    networks:
-      - backend
     links:
       - 'mysql:mydatabase'
+    networks:
+      - backend
 
-  php:
+
+  php-fpm:
     build:
       context: ./php
-    container_name: php
-    expose:
-      - 9000
+    container_name: php-fpm
+    #expose:
+    #  - 9000
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    volumes:
+      #- ./php/www:./var/www/html
+      - ./logs/php.log:/var/log/fpm-php.www.log
+      - ./data/:/var/www/html/
     networks:
       - backend
 
@@ -71,12 +89,12 @@ services:
 
 networks:
   backend:
-    driver: bridge
+    
   frontend:
-    driver: bridge
 
-volumes:
-  mysql:
+
+#volumes:
+#  mysql:
 
 
 
